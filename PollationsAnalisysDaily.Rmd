@@ -1,6 +1,6 @@
 ---
-title: "PollationsAnalisysDaily"
-author: "Alexandra Cabrera"
+title: "Concentración Diaria 2020"
+author: "Ierse-Universidad del Azuay"
 date: "3/8/2020"
 output: html_document
 ---
@@ -9,11 +9,10 @@ output: html_document
 knitr::opts_chunk$set(root.dir = "C:/Users/Ale/Documents/R", echo = FALSE)
 ```
 
-### Análisis del Comportamiento diario de las variables atmosféricas durante los meses de febrero y  15 de julio 2020
+### Análisis del Comportamiento diario de las variables atmosféricas PM2.5 Y SO2 durante los meses de enero a noviembre 2020
 
 
-Cargar librerias
-```{r librerias ,error=FALSE,message=FALSE,echo=TRUE}
+```{r librerias ,error=FALSE,message=FALSE,echo=FALSE}
 library("datetime")
 library("date")
 library("dplyr")
@@ -29,6 +28,7 @@ library("datos")
 library("xts")
 library("zoo")
 library("PerformanceAnalytics")
+options(dplyr.summarise.inform = FALSE)
 
 ```
 
@@ -39,17 +39,13 @@ limitey=c(0, 200)
 
 ```
 
-Leer los datos  y el porcentaje de los datos faltantes
-
-```{r datosFaltantes, echo=TRUE}
+```{r datosFaltantes, echo=FALSE}
 datos <- read.csv("C:/Users/Ale/Documents/R/PromediosDiariosPorContaminantes2020.csv", sep=";", header=TRUE)
-plot_missing(datos)
 
 ```
 
-Se crea un nuevo dataFrame con los valores máximos de PM2 
 
-```{r formatearDatos , echo=TRUE}
+```{r formatearDatos , echo=FALSE}
 
 datos <- datos[!is.na(datos$PM2_5.Maximo),]
 datosSO2<-data.frame(datos$Fecha,datos$PM2_5.Maximo)
@@ -75,27 +71,32 @@ newdata <- subset(datosSO2, pm2.5 >= OMSpm2.5, "pm2.5")
 
 porcentajepm2.5=(100*nrow(newdata))/nrow(datos)
 
-```
-###  Gráfico Concentración contaminantes diario de febrero y marzo 2020
 
-```{r graficoContracionPM2 , echo=TRUE}
+```
+
+
+```{r graficoContracionPM2 , echo=FALSE, warning=FALSE}
 
 OMS=25
-ggplot(data=datosSO2, aes(x=fecha, y=(pm2.5) )) + 
+p1<-ggplot(data=datosSO2, aes(x=fecha, y=(pm2.5) )) + 
   geom_bar(stat="identity", position=position_dodge(), aes(fill = pm2.5 > OMS))  +
   xlab("2020")+ # eje x
   ylab("ug/m3")+ # eje y
   scale_y_continuous(limits = limitey)+
   scale_fill_manual(values = color,name="", labels=c("PM2.5<25 ug/m3","PM2.5>25 ug/m3") )+
   labs(title = "Concentración PM2.5 diario máximo 2020",
-       subtitle = "01/02/2020 - 15/07/2020", 
-       caption = "El 31.85% de los datos están por encima de la norma OMS
+       subtitle = "01/01/2020 - 31/11/2020", 
+       caption = "El 26.06% de los datos están por encima de la norma OMS
        
        IERSE-Universidad del Azuay") +# t?tulo de legenda+
   theme(plot.title = element_text(hjust = 0.5),plot.subtitle= element_text(hjust = 0.5))
+p1 + geom_hline(aes(yintercept=promediopm2.5), colour="yellow3", linetype="solid")+ 
+  geom_hline(aes(yintercept=OMSpm2.5), colour="red", linetype="solid")+ 
+  annotate("text", x=fecha-15, y=180, label="- OMS 25 ug/m3", color="red",size=3.5)+
+  annotate("text", x=fecha-15, y=190, label="- PROM 25.84 ug/m3", color="yellow3",size=3.5)
 
 ```
-```{r graficoContracionPM25 , echo=FALSE}
+```{r graficoContracionPM25 , echo=FALSE, warning=FALSE}
 
 p1<-ggplot(data=datosSO2, aes(x=fecha, y=(pm2.5) )) + 
   geom_bar(stat="identity", position=position_dodge())  +
@@ -104,7 +105,7 @@ p1<-ggplot(data=datosSO2, aes(x=fecha, y=(pm2.5) )) +
   scale_fill_manual(values = color )+
   scale_y_continuous(limits = limitey)+
   labs(title = "Concentración PM2.5 diario máximo 2020",
-       subtitle = "01/02/2020 - 15/07/2020", 
+       subtitle = "01/01/2020 - 31/11/2020", 
        caption = "IERSE-Universidad del Azuay") +
   theme(plot.title = element_text(hjust = 0.5),plot.subtitle= element_text(hjust = 0.5))
 
@@ -115,13 +116,13 @@ p1 + geom_hline(aes(yintercept=promediopm2.5), colour="red", linetype="solid")+
 
 ```
 
-```{r leerDatosSO2 , echo=TRUE}
+```{r leerDatosSO2 , echo=FALSE}
 datos <- read.csv("C:/Users/Ale/Documents/R/PromediosDiariosPorContaminantes2020.csv", sep=";", header=TRUE)
 
 ```
-Se crea un nuevo dataFrame con los valores máximos de SO2 
 
-```{r formatearDatosSO2 , echo=TRUE}
+
+```{r formatearDatosSO2 , echo=FALSE}
 
 datos <- datos[!is.na(datos$SO2.Maximo),]
 datosso2<-data.frame(datos$Fecha,datos$SO2.Maximo)
@@ -147,12 +148,11 @@ porcentaje20=(100*nrow(newdata))/nrow(datosso2)
 
 ```
 
-###  Gráfico Concentración contaminantes diario de febrero y marzo 2020
 
-```{r graficoContracionSO2 , echo=TRUE}
+```{r graficoContracionSO2 , echo=FALSE, warning=FALSE}
 OMS=20 
 
-ggplot(data=datosso2, aes(x=fecha, y=(so2) )) + 
+p1<-ggplot(data=datosso2, aes(x=fecha, y=(so2) )) + 
   geom_bar(stat="identity", position=position_dodge(), aes(fill = so2 > OMS))  +
   xlab("2020")+ # eje x
   ylab("ug/m3")+ # eje y
@@ -160,14 +160,22 @@ ggplot(data=datosso2, aes(x=fecha, y=(so2) )) +
   scale_y_continuous(limits = limitey)+
   scale_x_date(date_labels = "%b")+
   labs(title = "Concentración SO2 diario máximo 2020",
-       subtitle = "01/02/2020 - 15/07/2020", 
-       caption = "El 80.60% de los registros están por encima de la norma OMS
+       subtitle = "01/01/2020 - 30/11/2020", 
+       caption = "El 83.99% de los registros están por encima de la norma OMS
        
        IERSE-Universidad del Azuay") +
   theme(plot.title = element_text(hjust = 0.5),plot.subtitle= element_text(hjust = 0.5))
 
+
+p1 + geom_hline(aes(yintercept=promedioso2), colour="yellow3", linetype="solid")+ 
+  geom_hline(aes(yintercept=OMSso2), colour="red", linetype="solid")+ 
+  geom_hline(aes(yintercept=normaSo2Ecua), colour="blue", linetype="solid")+ 
+  annotate("text", x=fechaso2+15, y=170, label="- OMS 20 ug/m3", color="red",size=3.5)+
+  annotate("text", x=fechaso2+15, y=180, label="- PROM 36.90 ug/m3", color="yellow3",size=3.5)+
+  annotate("text", x=fechaso2+15, y=190, label="- TULSMA 200 ug/m3", color="blue",size=3.5)
+
 ```
-```{r graficoContracionSO22 , echo=FALSE}
+```{r graficoContracionSO22 , echo=FALSE, warning=FALSE}
 p1<- ggplot(data=datosso2, aes(x=fecha, y=(so2) )) + 
   geom_bar(stat="identity", position=position_dodge(), )  +
   xlab("2020")+ # eje x
@@ -175,15 +183,15 @@ p1<- ggplot(data=datosso2, aes(x=fecha, y=(so2) )) +
   scale_fill_manual(values = color)+
   scale_y_continuous(limits = limitey)+
   labs(title = "Concentración SO2 diario máximo 2020",
-       subtitle = "01/02/2020 - 15/07/2020", 
+       subtitle = "01/01/2020 - 31/11/2020", 
        caption = "IERSE-Universidad del Azuay") +
   theme(plot.title = element_text(hjust = 0.5),plot.subtitle= element_text(hjust = 0.5))
 
-p1 + geom_hline(aes(yintercept=promedioso2), colour="red", linetype="solid")+ 
-  geom_hline(aes(yintercept=OMSso2), colour="yellow3", linetype="solid")+ 
+p1 + geom_hline(aes(yintercept=promedioso2), colour="yellow3", linetype="solid")+ 
+  geom_hline(aes(yintercept=OMSso2), colour="red", linetype="solid")+ 
   geom_hline(aes(yintercept=normaSo2Ecua), colour="blue", linetype="solid")+ 
-  annotate("text", x=fechaso2+15, y=170, label="- OMS 20 ug/m3", color="yellow3",size=3.5)+
-  annotate("text", x=fechaso2+15, y=180, label="- PROM 36.90 ug/m3", color="red",size=3.5)+
+  annotate("text", x=fechaso2+15, y=170, label="- OMS 20 ug/m3", color="red",size=3.5)+
+  annotate("text", x=fechaso2+15, y=180, label="- PROM 36.90 ug/m3", color="yellow3",size=3.5)+
   annotate("text", x=fechaso2+15, y=190, label="- TULSMA 200 ug/m3", color="blue",size=3.5)
 
 ```
