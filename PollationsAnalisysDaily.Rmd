@@ -33,7 +33,7 @@ options(dplyr.summarise.inform = FALSE)
 ```
 
 ```{r datos, echo=FALSE}
-color<-c("grey","gold","red");
+color<-c("grey","gold");
 limitey=c(0, 200)
 
 
@@ -78,7 +78,7 @@ porcentajepm2.5=(100*nrow(newdata))/nrow(datos)
 ```{r graficoContracionPM2 , echo=FALSE, warning=FALSE}
 
 OMS=25
-p1<-ggplot(data=datosSO2, aes(x=fecha, y=(pm2.5) )) + 
+ggplot(data=datosSO2, aes(x=fecha, y=(pm2.5) )) + 
   geom_bar(stat="identity", position=position_dodge(), aes(fill = pm2.5 > OMS))  +
   xlab("2020")+ # eje x
   ylab("ug/m3")+ # eje y
@@ -86,16 +86,14 @@ p1<-ggplot(data=datosSO2, aes(x=fecha, y=(pm2.5) )) +
   scale_fill_manual(values = color,name="", labels=c("PM2.5<25 ug/m3","PM2.5>25 ug/m3") )+
   labs(title = "Concentración PM2.5 diario máximo 2020",
        subtitle = "01/01/2020 - 31/11/2020", 
-       caption = "El 26.06% de los datos están por encima de la norma OMS
-       
+       caption = "El 42.52% de los datos están por encima de la norma OMS
        IERSE-Universidad del Azuay") +# t?tulo de legenda+
   theme(plot.title = element_text(hjust = 0.5),plot.subtitle= element_text(hjust = 0.5))
-p1 + geom_hline(aes(yintercept=promediopm2.5), colour="yellow3", linetype="solid")+ 
-  geom_hline(aes(yintercept=OMSpm2.5), colour="red", linetype="solid")+ 
-  annotate("text", x=fecha-15, y=180, label="- OMS 25 ug/m3", color="red",size=3.5)+
-  annotate("text", x=fecha-15, y=190, label="- PROM 25.84 ug/m3", color="yellow3",size=3.5)
+
 
 ```
+
+
 ```{r graficoContracionPM25 , echo=FALSE, warning=FALSE}
 
 p1<-ggplot(data=datosSO2, aes(x=fecha, y=(pm2.5) )) + 
@@ -109,10 +107,10 @@ p1<-ggplot(data=datosSO2, aes(x=fecha, y=(pm2.5) )) +
        caption = "IERSE-Universidad del Azuay") +
   theme(plot.title = element_text(hjust = 0.5),plot.subtitle= element_text(hjust = 0.5))
 
-p1 + geom_hline(aes(yintercept=promediopm2.5), colour="red", linetype="solid")+ 
-  geom_hline(aes(yintercept=OMSpm2.5), colour="yellow3", linetype="solid")+ 
-  annotate("text", x=fecha-15, y=180, label="- OMS 25 ug/m3", color="yellow3",size=3.5)+
-  annotate("text", x=fecha-15, y=190, label="- PROM 22.87 ug/m3", color="red",size=3.5)
+p1 + geom_hline(aes(yintercept=promediopm2.5), colour="yellow3", linetype="solid")+ 
+  geom_hline(aes(yintercept=OMSpm2.5), colour="red", linetype="solid")+ 
+  annotate("text", x=fecha-15, y=180, label="- OMS 25 ug/m3", color="red",size=3.5)+
+  annotate("text", x=fecha-15, y=190, label="- PROM 25.85 ug/m3", color="yellow3",size=3.5)
 
 ```
 
@@ -152,7 +150,7 @@ porcentaje20=(100*nrow(newdata))/nrow(datosso2)
 ```{r graficoContracionSO2 , echo=FALSE, warning=FALSE}
 OMS=20 
 
-p1<-ggplot(data=datosso2, aes(x=fecha, y=(so2) )) + 
+ggplot(data=datosso2, aes(x=fecha, y=(so2) )) + 
   geom_bar(stat="identity", position=position_dodge(), aes(fill = so2 > OMS))  +
   xlab("2020")+ # eje x
   ylab("ug/m3")+ # eje y
@@ -166,17 +164,11 @@ p1<-ggplot(data=datosso2, aes(x=fecha, y=(so2) )) +
        IERSE-Universidad del Azuay") +
   theme(plot.title = element_text(hjust = 0.5),plot.subtitle= element_text(hjust = 0.5))
 
-
-p1 + geom_hline(aes(yintercept=promedioso2), colour="yellow3", linetype="solid")+ 
-  geom_hline(aes(yintercept=OMSso2), colour="red", linetype="solid")+ 
-  geom_hline(aes(yintercept=normaSo2Ecua), colour="blue", linetype="solid")+ 
-  annotate("text", x=fechaso2+15, y=170, label="- OMS 20 ug/m3", color="red",size=3.5)+
-  annotate("text", x=fechaso2+15, y=180, label="- PROM 36.90 ug/m3", color="yellow3",size=3.5)+
-  annotate("text", x=fechaso2+15, y=190, label="- TULSMA 200 ug/m3", color="blue",size=3.5)
-
 ```
+
+
 ```{r graficoContracionSO22 , echo=FALSE, warning=FALSE}
-p1<- ggplot(data=datosso2, aes(x=fecha, y=(so2) )) + 
+p1<-ggplot(data=datosso2, aes(x=fecha, y=(so2) )) + 
   geom_bar(stat="identity", position=position_dodge(), )  +
   xlab("2020")+ # eje x
   ylab("ug/m3")+ # eje y
@@ -191,7 +183,7 @@ p1 + geom_hline(aes(yintercept=promedioso2), colour="yellow3", linetype="solid")
   geom_hline(aes(yintercept=OMSso2), colour="red", linetype="solid")+ 
   geom_hline(aes(yintercept=normaSo2Ecua), colour="blue", linetype="solid")+ 
   annotate("text", x=fechaso2+15, y=170, label="- OMS 20 ug/m3", color="red",size=3.5)+
-  annotate("text", x=fechaso2+15, y=180, label="- PROM 36.90 ug/m3", color="yellow3",size=3.5)+
+  annotate("text", x=fechaso2+15, y=180, label="- PROM 42.10 ug/m3", color="yellow3",size=3.5)+
   annotate("text", x=fechaso2+15, y=190, label="- TULSMA 200 ug/m3", color="blue",size=3.5)
 
 ```
